@@ -84,13 +84,13 @@ with tab_par:
         col_graf, col_knee = st.columns([2.5, 1])
 
         with col_graf:
-            solo_fact = st.toggle("Mostrar solo puntos factibles", value=False)
+            solo_fact = st.toggle("Mostrar solo Puntos Factibles", value=False)
             st.plotly_chart(graficos.fig_pareto(malla, frontera, idx_rodilla, solo_fact),
                             width="stretch")
 
         with col_knee:
-            st.markdown("### Knee point (rodilla)")
-            st.info("Solución de compromiso entre conversión y energía.")
+            st.markdown("### Knee Point")
+            st.info("Solución de compromiso entre Conversión y Energía.")
             st.metric("Temperatura T_in", f"{rod['T_in']:.1f} K", f"{rod['T_in'] - 273.15:.1f} °C",
                       delta_color="off")
             st.metric("Efectividad ε", f"{rod['eps']:.2f}")
