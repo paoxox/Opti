@@ -144,11 +144,11 @@ with tab_san:
     c1, c2 = v["check1"], v["check2"]
 
     tabla = pd.DataFrame([
-        {"Caso": "1) $T_{in}$ = 650 K, ε = 0.90", "X_S": f"{float(c1['X_S']):.7f}",
-         "S_out (ppm)": f"{float(c1['S_out']):.4f}", "Factible": "Sí" if c1["factible"] else "No",
+        {"Caso": "1) 𝑇in = 650 K, ε = 0.90", "X_S": f"{float(c1['X_S']):.7f}",
+         "𝑆out (ppm)": f"{float(c1['S_out']):.4f}", "Factible": "Sí" if c1["factible"] else "No",
          "Q (kJ/h)": f"{float(c1['Q_kJh']):.4e}", "Q (kW)": f"{float(c1['Q_kW']):,.1f}"},
-        {"Caso": "2) T_in = 550 K, ε = 0.75", "X_S": f"{float(c2['X_S']):.7f}",
-         "S_out (ppm)": f"{float(c2['S_out']):.2f}", "Factible": "Sí" if c2["factible"] else "No",
+        {"Caso": "2) 𝑇in = 550 K, ε = 0.75", "X_S": f"{float(c2['X_S']):.7f}",
+         "𝑆out (ppm)": f"{float(c2['S_out']):.2f}", "Factible": "Sí" if c2["factible"] else "No",
          "Q (kJ/h)": f"{float(c2['Q_kJh']):.4e}", "Q (kW)": f"{float(c2['Q_kW']):,.1f}"},
     ])
     st.dataframe(tabla, hide_index=True, width="stretch")
