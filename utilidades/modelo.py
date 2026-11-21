@@ -125,4 +125,4 @@ def validaciones(p: Parametros) -> dict:
     # Tercer check: eps -> 1 (1.0 se usa solo como límite teórico)
     c3 = evaluar(650.0, 1.0, p)
     q_limite = p.m * p.cp * (650.0 - float(c3["T_efluente"]))
-    return {"check1": c1, "check2": c2, "check3": c
+    return {"check1": c1, "check2": c2, "check3": c3, "q_limite_kJh": q_limite}
