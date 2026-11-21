@@ -56,9 +56,9 @@ actual = modelo.evaluar(t_in, eps, p)
 
 st.subheader("Punto operativo seleccionado")
 if actual["factible"]:
-    st.success(f"Cumple la especificación: $S_{{out}}$ = {float(actual['S_out']):.2f} ppm (≤ 10 ppm).")
+    st.success(f"Cumple la especificación: S_out = {float(actual['S_out']):.2f} ppm (≤ 10 ppm).")
 else:
-    st.warning(f"No cumple la especificación: $S_{{out}}$ = {float(actual['S_out']):.2f} ppm (> 10 ppm).")
+    st.warning(f"No cumple la especificación: S_out = {float(actual['S_out']):.2f} ppm (> 10 ppm).")
 
 c1, c2, c3, c4 = st.columns(4)
 c1.metric("Conversión X_S", f"{float(actual['X_S']) * 100:.2f} %")
@@ -91,24 +91,24 @@ with tab_par:
         with col_knee:
             st.markdown("### Knee point (rodilla)")
             st.info("Solución de compromiso entre Conversión y Energía.")
-            st.metric("Temperatura $T_{in}$", f"{rod['T_in']:.1f} K", f"{rod['T_in'] - 273.15:.1f} °C",
+            st.metric("Temperatura T_in", f"{rod['T_in']:.1f} K", f"{rod['T_in'] - 273.15:.1f} °C",
                       delta_color="off")
             st.metric("Efectividad ε", f"{rod['eps']:.2f}")
-            st.metric("Conversión $X_{S}$", f"{rod['X_S'] * 100:.3f} %")
-            st.metric("$S_{out}$", f"{rod['S_out']:.2f} ppm")
-            st.metric("$Q_{horno}$", f"{rod['Q_kW']:,.1f} kW")
+            st.metric("Conversión X_S", f"{rod['X_S'] * 100:.3f} %")
+            st.metric("S_out", f"{rod['S_out']:.2f} ppm")
+            st.metric("Q_horno", f"{rod['Q_kW']:,.1f} kW")
 
         st.subheader("Puntos representativos de la Frontera")
         pos = sorted(set(np.linspace(0, len(frontera) - 1, 6).astype(int)) | {idx_rodilla})
-        repres = frontera.iloc[pos][["$T_{in}$", "ε", "$X_{S}$", "$S_{out}$", "$Q$ $(kJ/h)$", "$Q$ $(kW)$"]].copy()
+        repres = frontera.iloc[pos][["T_in", "ε", "X_S", "S_out", "Q (kJ/h)", "Q (kW)"]].copy()
         repres.insert(0, "Nota", ["Knee point" if i == idx_rodilla else "" for i in pos])
         st.dataframe(repres, hide_index=True, width="stretch", column_config={
-            "T_in": st.column_config.NumberColumn("$T_{in}$ $(K)$", format="%.1f"),
+            "T_in": st.column_config.NumberColumn("T_in (K)", format="%.1f"),
             "eps": st.column_config.NumberColumn("ε", format="%.3f"),
-            "X_S": st.column_config.NumberColumn("$X_{S}$", format="%.5f"),
-            "S_out": st.column_config.NumberColumn("$S_{out}$ $(ppm)$", format="%.3f"),
-            "Q_kJh": st.column_config.NumberColumn("$Q$ $(kJ/h)$", format="%.3e"),
-            "Q_kW": st.column_config.NumberColumn("$Q$ $(kW)$", format="%.0f"),
+            "X_S": st.column_config.NumberColumn("X_S", format="%.5f"),
+            "S_out": st.column_config.NumberColumn("S_out (ppm)", format="%.3f"),
+            "Q_kJh": st.column_config.NumberColumn("Q (kJ/h)", format="%.3e"),
+            "Q_kW": st.column_config.NumberColumn("Q (kW)", format="%.0f"),
         })
 
         with st.expander("Resolución de la Malla y limitaciones"):
