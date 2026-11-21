@@ -89,7 +89,7 @@ def malla(p: Parametros, n_t: int = 201, n_e: int = 61) -> pd.DataFrame:
 
 
 def sensibilidad(t_in: float, eps: float, p: Parametros, frac: float = 0.10) -> pd.DataFrame:
-    """Perturba cada parámetro +-frac y reporta el efecto en $Q_{horno}$ y $S_{out}$."""
+    """Perturba cada parámetro +-frac y reporta el efecto en Q_horno y S_out."""
     base = evaluar(t_in, eps, p)
     filas = []
     for nombre in ("m", "cp", "ea", "k0", "tau"):
