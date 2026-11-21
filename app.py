@@ -103,17 +103,17 @@ with tab_par:
         repres = frontera.iloc[pos][["T_in", "eps", "X_S", "S_out", "Q_kJh", "Q_kW"]].copy()
         repres.insert(0, "Nota", ["Knee point" if i == idx_rodilla else "" for i in pos])
         st.dataframe(repres, hide_index=True, width="stretch", column_config={
-            "T_in": st.column_config.NumberColumn("$T_{{in}}$ (K)", format="%.1f"),
+            "T_in": st.column_config.NumberColumn("𝑇in (K) (K)", format="%.1f"),
             "eps": st.column_config.NumberColumn("ε", format="%.3f"),
-            "X_S": st.column_config.NumberColumn("X_S", format="%.5f"),
-            "S_out": st.column_config.NumberColumn("S_out (ppm)", format="%.3f"),
+            "X_S": st.column_config.NumberColumn("𝑋s", format="%.5f"),
+            "S_out": st.column_config.NumberColumn("𝑆out (ppm)", format="%.3f"),
             "Q_kJh": st.column_config.NumberColumn("Q (kJ/h)", format="%.3e"),
             "Q_kW": st.column_config.NumberColumn("Q (kW)", format="%.0f"),
         })
 
         with st.expander("Resolución de la malla y limitaciones"):
             st.write(
-                f"La malla usa pasos de {100 / (n_t - 1):.2f} K en T_in y {0.30 / (n_e - 1):.4f} "
+                f"La malla usa pasos de {100 / (n_t - 1):.2f} K en $T_{{in}} y {0.30 / (n_e - 1):.4f} "
                 "en ε. La frontera es un conjunto discreto: el knee point tiene una "
                 "incertidumbre del orden de un paso de malla en T_in. Como el modelo es "
                 "algebraico, evaluar miles de puntos toma milisegundos, así que afinar la malla "
