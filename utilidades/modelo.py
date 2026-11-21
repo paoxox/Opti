@@ -16,11 +16,7 @@ X_CALIB = 0.985       # conversión en el punto de calibración
 EA_BASE = 80_000.0    # J/mol
 TAU_BASE = 0.5        # h
 
-# k0 se calibra una sola vez con los valores base de Ea y tau. Si luego el usuario
-# cambia Ea o tau, k0 NO se recalcula: se perturba por separado (+-10 %), tal como
-# pide el enunciado.
 K0_BASE = float(-np.log(1 - X_CALIB) / (TAU_BASE * np.exp(-EA_BASE / (R * T_CALIB))))
-
 
 @dataclass(frozen=True)
 class Parametros:
@@ -119,10 +115,8 @@ def barrido_s_in(t_in: float, eps: float, p: Parametros, n: int = 11) -> pd.Data
 
 
 def validaciones(p: Parametros) -> dict:
-    """Los tres sanity checks del enunciado."""
     c1 = evaluar(650.0, 0.90, p)
     c2 = evaluar(550.0, 0.75, p)
-    # Tercer check: eps -> 1 (1.0 se usa solo como límite teórico)
     c3 = evaluar(650.0, 1.0, p)
     q_limite = p.m * p.cp * (650.0 - float(c3["T_efluente"]))
     return {"check1": c1, "check2": c2, "check3": c3, "q_limite_kJh": q_limite}
