@@ -16,7 +16,7 @@ st.set_page_config(
 col_logo, col_titulo = st.columns([1, 8], vertical_alignment="center")
 with col_logo:
     if os.path.exists("datos/logo.jpg"):
-        st.image("datos/logo.jpg", width=900)
+        st.image("datos/logo.jpg", width=1600)
 with col_titulo:
     st.title("Simulación y Optimización de Hidrodesulfuración (HDS)")
     st.caption("Evaluación de la conversión de azufre ($X_{S}$) y la carga térmica del horno "
