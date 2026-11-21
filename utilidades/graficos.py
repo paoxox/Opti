@@ -94,7 +94,7 @@ def fig_s_in(barrido):
     fig.add_trace(go.Scatter(x=barrido["S_in_ppm"], y=barrido["S_out_ppm"], mode="lines+markers",
                              line=dict(color=AZUL), name="S_out"))
     fig.add_hline(y=10, line_dash="dash", line_color=ROJO, annotation_text="límite 10 ppm")
-    fig.update_layout(xaxis_title="S_in (ppm)", yaxis_title="S_out (ppm)",
+    fig.update_layout(xaxis_title="S<sub>in (ppm)", yaxis_title="S<sub>out (ppm)",
                       title="Efecto del azufre de alimentación", margin=dict(t=50, b=40))
     return fig
 
