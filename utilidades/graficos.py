@@ -100,7 +100,7 @@ def fig_s_in(barrido):
 
 
 def fig_rodilla_precio(tabla):
-    fig = go.Figure(go.Scatter(x=tabla["Peso energia"], y=tabla["𝑇in"], mode="lines+markers",
+    fig = go.Figure(go.Scatter(x=tabla["Peso energia"], y=tabla["T_in"], mode="lines+markers",
                                line=dict(color=NARANJA)))
     fig.update_layout(xaxis_title="Peso relativo de la energía (w)",
                       yaxis_title="T<sub>in</sub> del punto elegido (K)",
