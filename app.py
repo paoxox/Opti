@@ -94,9 +94,9 @@ with tab_par:
             st.metric("Temperatura $T_{in}$", f"{rod['T_in']:.1f} K", f"{rod['T_in'] - 273.15:.1f} °C",
                       delta_color="off")
             st.metric("Efectividad ε", f"{rod['eps']:.2f}")
-            st.metric("Conversión X_S", f"{rod['X_S'] * 100:.3f} %")
-            st.metric("S_out", f"{rod['S_out']:.2f} ppm")
-            st.metric("Q_horno", f"{rod['Q_kW']:,.1f} kW")
+            st.metric("Conversión $X_{S}$", f"{rod['X_S'] * 100:.3f} %")
+            st.metric("$S_{out}$", f"{rod['S_out']:.2f} ppm")
+            st.metric("$Q_{horno}$", f"{rod['Q_kW']:,.1f} kW")
 
         st.subheader("Puntos representativos de la frontera")
         pos = sorted(set(np.linspace(0, len(frontera) - 1, 6).astype(int)) | {idx_rodilla})
