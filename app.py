@@ -104,11 +104,11 @@ with tab_par:
         repres.insert(0, "Nota", ["Knee point" if i == idx_rodilla else "" for i in pos])
         st.dataframe(repres, hide_index=True, width="stretch", column_config={
             "T_in": st.column_config.NumberColumn("T_in (K)", format="%.1f"),
-            "eps": st.column_config.NumberColumn("ε", format="%.3f"),
+            "eps": st.column_config.NumberColumn("eps", format="%.3f"),
             "X_S": st.column_config.NumberColumn("X_S", format="%.5f"),
             "S_out": st.column_config.NumberColumn("S_out (ppm)", format="%.3f"),
-            "Q_kJh": st.column_config.NumberColumn("Q (kJ/h)", format="%.3e"),
-            "Q_kW": st.column_config.NumberColumn("Q (kW)", format="%.0f"),
+            "Q_kJh": st.column_config.NumberColumn("Q_kJ/h", format="%.3e"),
+            "Q_kW": st.column_config.NumberColumn("Q_kW", format="%.0f"),
         })
 
         with st.expander("Resolución de la Malla y limitaciones"):
