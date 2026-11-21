@@ -1,11 +1,8 @@
-"""Funciones que devuelven figuras de Plotly (sin dibujar nada en Streamlit)."""
 import plotly.graph_objects as go
 
 AZUL, ROJO, GRIS, VERDE, NARANJA = "#1F77B4", "#D62728", "#9AA0A6", "#2CA02C", "#FF7F0E"
 
-
 LEYENDA_ABAJO = dict(orientation="h", yanchor="top", y=-0.22, xanchor="left", x=0)
-
 
 def fig_factibilidad(df, t_in=None, eps=None):
     """Mapa T_in vs eps coloreado por S_out; la línea negra marca S_out = 10 ppm."""
@@ -30,7 +27,6 @@ def fig_factibilidad(df, t_in=None, eps=None):
         xaxis_title="T<sub>in (K)", yaxis_title="Efectividad ε",
         legend=LEYENDA_ABAJO, margin=dict(t=60, b=90, r=20))
     return fig
-
 
 def fig_pareto(df, frontera, idx_rodilla=None, solo_factibles=False):
     """Frontera de Pareto: carga térmica (kW) en x y conversión X_S (%) en y."""
@@ -66,7 +62,6 @@ def fig_pareto(df, frontera, idx_rodilla=None, solo_factibles=False):
         legend=LEYENDA_ABAJO, margin=dict(t=60, b=90, r=20), height=520)
     return fig
 
-
 def fig_distancias(frontera, dist, idx):
     fig = go.Figure(go.Scatter(x=frontera["T_in"], y=dist, mode="lines", line=dict(color=AZUL)))
     if len(frontera):
@@ -75,7 +70,6 @@ def fig_distancias(frontera, dist, idx):
                       yaxis_title="Distancia perpendicular (normalizada)",
                       title="Cómo se localiza el Knee Point", margin=dict(t=50, b=40))
     return fig
-
 
 def fig_tornado(sens, columna="dQ_%", titulo="Efecto sobre Q<sub>horno"):
     nombres = {"m": "ṁ", "cp": "Cp", "ea": "Ea", "k0": "k₀", "tau": "τ"}
@@ -88,7 +82,6 @@ def fig_tornado(sens, columna="dQ_%", titulo="Efecto sobre Q<sub>horno"):
                       legend=LEYENDA_ABAJO, margin=dict(t=50, b=90))
     return fig
 
-
 def fig_s_in(barrido):
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=barrido["S_in_ppm"], y=barrido["S_out_ppm"], mode="lines+markers",
@@ -97,7 +90,6 @@ def fig_s_in(barrido):
     fig.update_layout(xaxis_title="S<sub>in (ppm)", yaxis_title="S<sub>out (ppm)",
                       title="Efecto del azufre de alimentación", margin=dict(t=50, b=40))
     return fig
-
 
 def fig_rodilla_precio(tabla):
     fig = go.Figure(go.Scatter(x=tabla["peso_energia"], y=tabla["T_in"], mode="lines+markers",
