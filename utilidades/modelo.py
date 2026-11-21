@@ -31,31 +31,24 @@ def constante_cinetica(t_in, p: Parametros):
 def conversion(t_in, p: Parametros):
     return 1.0 - np.exp(-constante_cinetica(t_in, p) * p.tau)
 
-
 def azufre_salida(t_in, p: Parametros):
     return p.s_in * (1.0 - conversion(t_in, p))
 
-
 def temp_efluente(t_in, p: Parametros):
     return np.asarray(t_in, dtype=float) + DT_AD_MAX * conversion(t_in, p)
-
 
 def temp_intercambiador(t_in, eps, p: Parametros):
     t_ef = temp_efluente(t_in, p)
     return T_ALIM + np.asarray(eps, dtype=float) * (t_ef - T_ALIM)
 
-
 def q_horno(t_in, eps, p: Parametros):
     """Carga del horno en kJ/h. Puede ser negativa (excedente de calor)."""
     return p.m * p.cp * (np.asarray(t_in, dtype=float) - temp_intercambiador(t_in, eps, p))
 
-
 def kjh_a_kw(q):
     return np.asarray(q) / 3600.0
 
-
 def evaluar(t_in, eps, p: Parametros) -> dict:
-    """Evalúa un punto (o arreglos del mismo tamaño) y devuelve un diccionario."""
     x = conversion(t_in, p)
     s = p.s_in * (1.0 - x)
     q = q_horno(t_in, eps, p)
@@ -71,17 +64,13 @@ def evaluar(t_in, eps, p: Parametros) -> dict:
         "Q_kW": kjh_a_kw(q),
     }
 
-
 def malla(p: Parametros, n_t: int = 201, n_e: int = 61) -> pd.DataFrame:
-    """Grid search completo sobre el dominio T_in x eps."""
     t = np.linspace(550.0, 650.0, n_t)
     e = np.linspace(0.60, 0.90, n_e)
     tt, ee = np.meshgrid(t, e)
     return pd.DataFrame(evaluar(tt.ravel(), ee.ravel(), p))
 
-
 def sensibilidad(t_in: float, eps: float, p: Parametros, frac: float = 0.10) -> pd.DataFrame:
-    """Perturba cada parámetro +-frac y reporta el efecto en Q_horno y S_out."""
     base = evaluar(t_in, eps, p)
     filas = []
     for nombre in ("m", "cp", "ea", "k0", "tau"):
@@ -101,14 +90,12 @@ def sensibilidad(t_in: float, eps: float, p: Parametros, frac: float = 0.10) -> 
 
 
 def barrido_s_in(t_in: float, eps: float, p: Parametros, n: int = 11) -> pd.DataFrame:
-    """S_in se explora dentro del rango de la tabla (450-550 ppm)."""
     filas = []
     for s in np.linspace(450.0, 550.0, n):
         r = evaluar(t_in, eps, replace(p, s_in=float(s)))
         filas.append({"S_in_ppm": float(s), "S_out_ppm": float(r["S_out"]),
                       "factible": bool(r["factible"]), "Q_kJh": float(r["Q_kJh"])})
     return pd.DataFrame(filas)
-
 
 def validaciones(p: Parametros) -> dict:
     c1 = evaluar(650.0, 0.90, p)
