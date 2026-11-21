@@ -73,7 +73,7 @@ malla = calcular_malla(p.m, p.s_in, p.cp, p.ea, p.k0, p.tau, n_t, n_e)
 frontera, idx_rodilla, dist = calcular_frontera(malla)
 
 tab_par, tab_san, tab_sens, tab_mod = st.tabs(
-    ["Frontera de Pareto", "Sanity checks y malla", "Sensibilidad", "Modelo"])
+    ["Frontera de Pareto", "Sanity Checks y Malla", "Sensibilidad", "Modelo"])
 
 # ---- Pareto
 with tab_par:
@@ -90,32 +90,32 @@ with tab_par:
 
         with col_knee:
             st.markdown("### Knee point (rodilla)")
-            st.info("Solución de compromiso entre conversión y energía.")
-            st.metric("Temperatura T_in", f"{rod['T_in']:.1f} K", f"{rod['T_in'] - 273.15:.1f} °C",
+            st.info("Solución de compromiso entre Conversión y Energía.")
+            st.metric("Temperatura $T_{in}$", f"{rod['T_in']:.1f} K", f"{rod['T_in'] - 273.15:.1f} °C",
                       delta_color="off")
             st.metric("Efectividad ε", f"{rod['eps']:.2f}")
-            st.metric("Conversión X_S", f"{rod['X_S'] * 100:.3f} %")
-            st.metric("S_out", f"{rod['S_out']:.2f} ppm")
-            st.metric("Q_horno", f"{rod['Q_kW']:,.1f} kW")
+            st.metric("Conversión $X_{S}$", f"{rod['X_S'] * 100:.3f} %")
+            st.metric("$S_{out}$", f"{rod['S_out']:.2f} ppm")
+            st.metric("$Q_{horno}$", f"{rod['Q_kW']:,.1f} kW")
 
-        st.subheader("Puntos representativos de la frontera")
+        st.subheader("Puntos representativos de la Frontera")
         pos = sorted(set(np.linspace(0, len(frontera) - 1, 6).astype(int)) | {idx_rodilla})
-        repres = frontera.iloc[pos][["T_in", "eps", "X_S", "S_out", "Q_kJh", "Q_kW"]].copy()
+        repres = frontera.iloc[pos][["$T_{in}$", "ε", "$X_{S}$", "$S_{out}$", "$Q$ $(kJ/h)$", "$Q$ $(kW)$"]].copy()
         repres.insert(0, "Nota", ["Knee point" if i == idx_rodilla else "" for i in pos])
         st.dataframe(repres, hide_index=True, width="stretch", column_config={
-            "T_in": st.column_config.NumberColumn("T_in (K)", format="%.1f"),
+            "T_in": st.column_config.NumberColumn("$T_{in}$ $(K)$", format="%.1f"),
             "eps": st.column_config.NumberColumn("ε", format="%.3f"),
-            "X_S": st.column_config.NumberColumn("X_S", format="%.5f"),
-            "S_out": st.column_config.NumberColumn("S_out (ppm)", format="%.3f"),
-            "Q_kJh": st.column_config.NumberColumn("Q (kJ/h)", format="%.3e"),
-            "Q_kW": st.column_config.NumberColumn("Q (kW)", format="%.0f"),
+            "X_S": st.column_config.NumberColumn("$X_{S}$", format="%.5f"),
+            "S_out": st.column_config.NumberColumn("$S_{out}$ $(ppm)$", format="%.3f"),
+            "Q_kJh": st.column_config.NumberColumn("$Q$ $(kJ/h)$", format="%.3e"),
+            "Q_kW": st.column_config.NumberColumn("$Q$ $(kW)$", format="%.0f"),
         })
 
-        with st.expander("Resolución de la malla y limitaciones"):
+        with st.expander("Resolución de la Malla y limitaciones"):
             st.write(
-                f"La malla usa pasos de {100 / (n_t - 1):.2f} K en T_in y {0.30 / (n_e - 1):.4f} "
-                "en ε. La frontera es un conjunto discreto: el knee point tiene una "
-                "incertidumbre del orden de un paso de malla en T_in. Como el modelo es "
+                f"La malla usa pasos de {100 / (n_t - 1):.2f} K en $T_{{in}}4 y {0.30 / (n_e - 1):.4f} "
+                "en ε. La frontera es un conjunto discreto: el Knee Point tiene una "
+                "incertidumbre del orden de un paso de malla en $T_{in}$. Como el modelo es "
                 "algebraico, evaluar miles de puntos toma milisegundos, así que afinar la malla "
                 "es barato; aun así, un grid search no garantiza el óptimo exacto.")
             st.write(
