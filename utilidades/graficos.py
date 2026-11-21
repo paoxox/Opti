@@ -63,7 +63,7 @@ def fig_pareto(df, frontera, idx_rodilla=None, solo_factibles=False):
     return fig
 
 def fig_distancias(frontera, dist, idx):
-    fig = go.Figure(go.Scatter(x=frontera["T_in"], y=dist, mode="lines", line=dict(color=AZUL)))
+    fig = go.Figure(go.Scatter(x=frontera["T_in"], y=dist, mode="lines", line=dict(color=ROJO)))
     if len(frontera):
         fig.add_vline(x=float(frontera.iloc[idx]["T_in"]), line_dash="dash", line_color=NARANJA)
     fig.update_layout(xaxis_title="T<sub>in sobre la frontera (K)",
