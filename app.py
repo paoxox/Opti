@@ -144,10 +144,10 @@ with tab_san:
     c1, c2 = v["check1"], v["check2"]
 
     tabla = pd.DataFrame([
-        {"Caso": "1) 𝑇in = 650 K, ε = 0.90", "X_S": f"{float(c1['X_S']):.7f}",
+        {"Caso": "1) 𝑇in = 650 K, ε = 0.90", "𝑋s": f"{float(c1['X_S']):.7f}",
          "𝑆out (ppm)": f"{float(c1['S_out']):.4f}", "Factible": "Sí" if c1["factible"] else "No",
          "Q (kJ/h)": f"{float(c1['Q_kJh']):.4e}", "Q (kW)": f"{float(c1['Q_kW']):,.1f}"},
-        {"Caso": "2) 𝑇in = 550 K, ε = 0.75", "X_S": f"{float(c2['X_S']):.7f}",
+        {"Caso": "2) 𝑇in = 550 K, ε = 0.75", "𝑋s": f"{float(c2['X_S']):.7f}",
          "𝑆out (ppm)": f"{float(c2['S_out']):.2f}", "Factible": "Sí" if c2["factible"] else "No",
          "Q (kJ/h)": f"{float(c2['Q_kJh']):.4e}", "Q (kW)": f"{float(c2['Q_kW']):,.1f}"},
     ])
@@ -158,20 +158,20 @@ with tab_san:
     lim = modelo.evaluar(np.full(4, 650.0), eps_lim, base)
     st.dataframe(pd.DataFrame({
         "ε": eps_lim,
-        "T_intercambiador (K)": lim["T_intercambiador"],
-        "T_efluente (K)": lim["T_efluente"],
-        "Q_horno (kJ/h)": lim["Q_kJh"],
+        "𝑇 intercambiador (K)": lim["T_intercambiador"],
+        "𝑇 efluente (K)": lim["T_efluente"],
+        "𝑄horno (kJ/h)": lim["Q_kJh"],
     }), hide_index=True, width="stretch", column_config={
-        "T_intercambiador (K)": st.column_config.NumberColumn(format="%.4f"),
-        "T_efluente (K)": st.column_config.NumberColumn(format="%.4f"),
-        "Q_horno (kJ/h)": st.column_config.NumberColumn(format="%.4e"),
+        "𝑇 intercambiador (K)": st.column_config.NumberColumn(format="%.4f"),
+        "𝑇 efluente (K)": st.column_config.NumberColumn(format="%.4f"),
+        "𝑄horno (kJ/h)": st.column_config.NumberColumn(format="%.4e"),
     })
-    st.caption(f"Cuando ε → 1, T_intercambiador → T_efluente y Q → ṁ·Cp·(T_in − T_efluente) = "
+    st.caption(f"Cuando ε → 1, 𝑇 intercambiador → 𝑇 efluente y Q → ṁ·Cp·(𝑇in − 𝑇 efluente) = "
                f"{v['q_limite_kJh']:.4e} kJ/h. El signo negativo indica que el efluente está "
                "más caliente que la entrada al reactor: con un intercambiador ideal sobraría "
                "calor y no haría falta horno.")
 
-    st.subheader("Estadísticas de la malla")
+    st.subheader("Estadísticas de la Malla")
     n_fact = int(malla["factible"].sum())
     m1, m2, m3, m4 = st.columns(4)
     m1.metric("Puntos de la malla", f"{len(malla):,}")
