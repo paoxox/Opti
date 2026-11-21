@@ -101,7 +101,7 @@ def sensibilidad(t_in: float, eps: float, p: Parametros, frac: float = 0.10) -> 
                 "cambio_%": signo * frac * 100,
                 "Q_kJh": float(r["Q_kJh"]),
                 "dQ_%": float((r["Q_kJh"] / base["Q_kJh"] - 1) * 100),
-                "$S_{out}$_ppm": float(r["S_out"]),
+                "S_out_ppm": float(r["S_out"]),
                 "dS_out_%": float((r["S_out"] / base["S_out"] - 1) * 100),
                 "factible": bool(r["factible"]),
             })
