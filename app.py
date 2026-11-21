@@ -103,7 +103,7 @@ with tab_par:
         repres = frontera.iloc[pos][["T_in", "eps", "X_S", "S_out", "Q_kJh", "Q_kW"]].copy()
         repres.insert(0, "Nota", ["Knee point" if i == idx_rodilla else "" for i in pos])
         st.dataframe(repres, hide_index=True, width="stretch", column_config={
-            "T_in": st.column_config.NumberColumn("𝑇in (K) (K)", format="%.1f"),
+            "T_in": st.column_config.NumberColumn("𝑇in (K)", format="%.1f"),
             "eps": st.column_config.NumberColumn("ε", format="%.3f"),
             "X_S": st.column_config.NumberColumn("𝑋s", format="%.5f"),
             "S_out": st.column_config.NumberColumn("𝑆out (ppm)", format="%.3f"),
@@ -113,18 +113,18 @@ with tab_par:
 
         with st.expander("Resolución de la malla y limitaciones"):
             st.write(
-                f"La malla usa pasos de {100 / (n_t - 1):.2f} K en $T_{{in}} y {0.30 / (n_e - 1):.4f} "
-                "en ε. La frontera es un conjunto discreto: el knee point tiene una "
-                "incertidumbre del orden de un paso de malla en T_in. Como el modelo es "
+                f"La malla usa pasos de {100 / (n_t - 1):.2f} K en 𝑇in y {0.30 / (n_e - 1):.4f} "
+                "en ε. La frontera es un conjunto discreto: el Knee Point tiene una "
+                "incertidumbre del orden de un paso de malla en 𝑇in. Como el modelo es "
                 "algebraico, evaluar miles de puntos toma milisegundos, así que afinar la malla "
-                "es barato; aun así, un grid search no garantiza el óptimo exacto.")
+                "es barato; aun así, un Grid Search no garantiza el óptimo exacto.")
             st.write(
-                "X_S depende solo de T_in, y a T_in fijo Q_horno baja cuando ε sube. Por eso "
+                "𝑋s depende solo de 𝑇in, y a 𝑇in fijo 𝑄horno baja cuando ε sube. Por eso "
                 "todos los puntos con ε < 0.90 quedan dominados y la frontera se forma sobre "
                 "la línea ε = 0.90.")
             st.plotly_chart(graficos.fig_distancias(frontera, dist, idx_rodilla), width="stretch")
 
-        with st.expander("Sensibilidad del knee point al precio de la energía (opcional)"):
+        with st.expander("Sensibilidad del Knee Point al precio de la energía (opcional)"):
             st.write("Se minimiza una suma ponderada de los objetivos normalizados; w grande "
                      "equivale a una energía más cara frente a la calidad. No es un modelo "
                      "económico completo.")
