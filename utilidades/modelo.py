@@ -1,7 +1,3 @@
-"""Modelo simplificado de la unidad HDS (reactor, balance térmico y horno).
-
-Todo está escrito con numpy para poder evaluar mallas completas de una vez.
-"""
 from dataclasses import dataclass, replace
 
 import numpy as np
