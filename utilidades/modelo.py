@@ -1,5 +1,4 @@
 from dataclasses import dataclass, replace
-
 import numpy as np
 import pandas as pd
 
@@ -23,10 +22,8 @@ class Parametros:
     k0: float = K0_BASE      # 1/h
     tau: float = TAU_BASE    # h
 
-
 def constante_cinetica(t_in, p: Parametros):
     return p.k0 * np.exp(-p.ea / (R * np.asarray(t_in, dtype=float)))
-
 
 def conversion(t_in, p: Parametros):
     return 1.0 - np.exp(-constante_cinetica(t_in, p) * p.tau)
@@ -42,7 +39,6 @@ def temp_intercambiador(t_in, eps, p: Parametros):
     return T_ALIM + np.asarray(eps, dtype=float) * (t_ef - T_ALIM)
 
 def q_horno(t_in, eps, p: Parametros):
-    """Carga del horno en kJ/h. Puede ser negativa (excedente de calor)."""
     return p.m * p.cp * (np.asarray(t_in, dtype=float) - temp_intercambiador(t_in, eps, p))
 
 def kjh_a_kw(q):
