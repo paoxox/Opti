@@ -25,7 +25,7 @@ def fig_factibilidad(df, t_in=None, eps=None):
                                  marker=dict(size=13, symbol="x", color="black",
                                              line=dict(color="white", width=1))))
     fig.update_layout(
-        title=dict(text="Dominio de decisión (a la derecha de la línea negra se cumple S_out ≤ 10 ppm)",
+        title=dict(text="Dominio de decisión (a la derecha de la línea negra se cumple S<sub>out ≤ 10 ppm)",
                    font=dict(size=14)),
         xaxis_title="$T_{in}$ (K)", yaxis_title="Efectividad ε",
         legend=LEYENDA_ABAJO, margin=dict(t=60, b=90, r=20))
