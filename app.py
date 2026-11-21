@@ -54,9 +54,9 @@ p = modelo.Parametros(m=m_dot, s_in=s_in, cp=cp, ea=ea, k0=modelo.K0_BASE * f_k0
 # ------------------------------------------------------------------ punto operativo
 actual = modelo.evaluar(t_in, eps, p)
 
-st.subheader("Punto operativo seleccionado")
+st.subheader("Punto Operativo Seleccionado")
 if actual["factible"]:
-    st.success(f"Cumple la especificación: S_out = {float(actual['S_out']):.2f} ppm (≤ 10 ppm).")
+    st.success(f"Cumple la especificación: $S_{{out}}$ = {float(actual['S_out']):.2f} ppm (≤ 10 ppm).")
 else:
     st.warning(f"No cumple la especificación: S_out = {float(actual['S_out']):.2f} ppm (> 10 ppm).")
 
