@@ -1,7 +1,3 @@
-"""Simulación y optimización de una unidad HDS simplificada.
-
-Ejecutar con:  streamlit run app.py
-"""
 import os
 
 import numpy as np
@@ -18,7 +14,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# ------------------------------------------------------------------ cabecera
+# Cabecera
 col_logo, col_titulo = st.columns([1, 8], vertical_alignment="center")
 with col_logo:
     # Si guardas un logo en datos/logo.png se muestra aquí; si no, no pasa nada.
@@ -29,7 +25,7 @@ with col_titulo:
     st.caption("Evaluación de la conversión de azufre ($X_{S}$) y la carga térmica del horno "
                "($Q_{horno}$) bajo la restricción $S_{out}$ ≤ 10 ppm.")
 
-# ------------------------------------------------------------------ barra lateral
+# Barra lateral
 with st.sidebar:
     st.header("Variables de decisión")
     t_in = st.slider("Temperatura entrada reactor $T_{in}$ $(K)$", 550.0, 650.0, 600.0, 1.0)
@@ -51,7 +47,7 @@ with st.sidebar:
 
 p = modelo.Parametros(m=m_dot, s_in=s_in, cp=cp, ea=ea, k0=modelo.K0_BASE * f_k0, tau=tau)
 
-# ------------------------------------------------------------------ punto operativo
+# Punto operativo
 actual = modelo.evaluar(t_in, eps, p)
 
 st.subheader("Punto Operativo Seleccionado")
@@ -68,14 +64,14 @@ c4.metric("$Q_{horno}$", f"{float(actual['Q_kJh']):,.0f} kJ/h")
 
 st.divider()
 
-# ------------------------------------------------------------------ malla y Pareto
+# Malla y Pareto
 malla = calcular_malla(p.m, p.s_in, p.cp, p.ea, p.k0, p.tau, n_t, n_e)
 frontera, idx_rodilla, dist = calcular_frontera(malla)
 
 tab_par, tab_san, tab_sens, tab_mod = st.tabs(
     ["Frontera de Pareto", "Sanity Checks y Malla", "Sensibilidad", "Modelo"])
 
-# ---- Pareto
+#Pareto
 with tab_par:
     if frontera.empty:
         st.error("No se encontraron puntos factibles en el dominio con estos parámetros.")
@@ -136,7 +132,7 @@ with tab_par:
                            frontera.drop(columns="f1").to_csv(index=False).encode("utf-8"),
                            file_name="frontera_pareto.csv", mime="text/csv")
 
-# ---- Sanity checks y malla
+# Sanity checks y malla
 with tab_san:
     st.subheader("Sanity checks (parámetros base)")
     base = modelo.Parametros()
@@ -183,7 +179,7 @@ with tab_san:
                f"({malla['Q_kW'].min():,.0f} a {malla['Q_kW'].max():,.0f} kW).")
     st.plotly_chart(graficos.fig_factibilidad(malla, t_in, eps), width="stretch")
 
-# ---- Sensibilidad
+# Sensibilidad
 with tab_sens:
     st.subheader("Análisis de Sensibilidad Paramétrica")
     opciones = ["Punto de la barra lateral"]
@@ -214,13 +210,13 @@ with tab_sens:
     st.download_button("Descargar sensibilidad (CSV)", sens.to_csv(index=False).encode("utf-8"),
                        file_name="sensibilidad.csv", mime="text/csv")
 
-# ---- Modelo
+# Modelo
 with tab_mod:
     st.latex(r"k(T)=k_0\,e^{-E_a/(RT)},\quad X_S=1-e^{-k\tau},\quad S_{out}=S_{in}(1-X_S)")
     st.latex(r"k_0=\frac{-\ln(1-0.985)}{\tau\,e^{-E_a/(R\cdot 600)}}")
     st.latex(r"\Delta T_{ad}=15\,X_S,\quad T_{ef}=T_{in}+\Delta T_{ad}")
     st.latex(r"T_{int}=T_{alim}+\varepsilon\,(T_{ef}-T_{alim}),\quad Q_{horno}=\dot m\,C_p\,(T_{in}-T_{int})")
     st.markdown(
-        "- La calibración de k₀ y el incremento adiabático de 15 K son elecciones pedagógicas.\n"
+        "- La calibración de Ko y el incremento adiabático de 15 K son elecciones pedagógicas.\n"
         "- Intercambiador por efectividad constante, Cp constante, sin pérdidas.\n"
         "- 𝑄 horno negativo se conserva: indica excedente de calor.")
