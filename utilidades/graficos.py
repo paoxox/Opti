@@ -73,7 +73,7 @@ def fig_distancias(frontera, dist, idx):
         fig.add_vline(x=float(frontera.iloc[idx]["T_in"]), line_dash="dash", line_color=NARANJA)
     fig.update_layout(xaxis_title="T<sub>in sobre la frontera (K)",
                       yaxis_title="Distancia perpendicular (normalizada)",
-                      title="Cómo se localiza la rodilla", margin=dict(t=50, b=40))
+                      title="Cómo se localiza el Knee Point", margin=dict(t=50, b=40))
     return fig
 
 
