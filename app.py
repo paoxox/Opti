@@ -103,7 +103,7 @@ with tab_par:
         repres = frontera.iloc[pos][["T_in", "eps", "X_S", "S_out", "Q_kJh", "Q_kW"]].copy()
         repres.insert(0, "Nota", ["Knee point" if i == idx_rodilla else "" for i in pos])
         st.dataframe(repres, hide_index=True, width="stretch", column_config={
-            "T_in": st.column_config.NumberColumn("$T_{in}$ (K)", format="%.1f"),
+            "T_in": st.column_config.NumberColumn("*T_{in}* (K)", format="%.1f"),
             "eps": st.column_config.NumberColumn("ε", format="%.3f"),
             "X_S": st.column_config.NumberColumn("X_S", format="%.5f"),
             "S_out": st.column_config.NumberColumn("S_out (ppm)", format="%.3f"),
