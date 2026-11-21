@@ -77,7 +77,7 @@ def fig_distancias(frontera, dist, idx):
     return fig
 
 
-def fig_tornado(sens, columna="dQ_%", titulo="Efecto sobre Q_horno"):
+def fig_tornado(sens, columna="dQ_%", titulo="Efecto sobre Q<sub>horno"):
     nombres = {"m": "ṁ", "cp": "Cp", "ea": "Ea", "k0": "k₀", "tau": "τ"}
     fig = go.Figure()
     for signo, color in ((-10, VERDE), (10, ROJO)):
