@@ -65,8 +65,8 @@ def rodilla_vs_peso_energia(frontera: pd.DataFrame, pesos=None) -> pd.DataFrame:
     for w in pesos:
         i = int(np.argmin(w * f2 + (1 - w) * f1))
         fila = frontera.iloc[i]
-        filas.append({"Peso energia": float(w), "Tin": fila["T_in"], "eps": fila["eps"],
-                      "Xs": fila["X_S"], "Sout": fila["S_out"], "Q kW": fila["Q_kW"]})
+        filas.append({"Peso energia": float(w), "T_in": fila["T_in"], "eps": fila["eps"],
+                      "X_S": fila["X_S"], "S_out": fila["S_out"], "Q_kW": fila["Q_kW"]})
     return pd.DataFrame(filas)
     knee_point = df_pareto.loc[df_pareto["distancia_knee"].idxmax()].to_dict()
 
