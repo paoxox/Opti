@@ -54,7 +54,7 @@ def rodilla_vs_peso_energia(frontera: pd.DataFrame, pesos=None) -> pd.DataFrame:
     """Estudio opcional: qué punto de la frontera se elige si la energía pesa más.
 
     No es un modelo económico. Se minimiza una suma ponderada de los objetivos
-    normalizados, J = w * Q_norm + (1 - w) * (1 - X_S)_norm, donde w crece
+    normalizados, J = w * $Q_{norm}$ + (1 - w) * (1 - $X_{s}$)_norm, donde w crece
     cuando la energía es más cara respecto a la calidad.
     """
     if pesos is None:
