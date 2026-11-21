@@ -107,7 +107,7 @@ with tab_par:
             "eps": st.column_config.NumberColumn("eps", format="%.3f"),
             "X_S": st.column_config.NumberColumn("X_S", format="%.5f"),
             "S_out": st.column_config.NumberColumn("S_out (ppm)", format="%.3f"),
-            "Q_kJh": st.column_config.NumberColumn("Q_kJ/h", format="%.3e"),
+            "Q_kJh": st.column_config.NumberColumn("Q_kJh", format="%.3e"),
             "Q_kW": st.column_config.NumberColumn("Q_kW", format="%.0f"),
         })
 
