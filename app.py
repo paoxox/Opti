@@ -32,7 +32,7 @@ with col_titulo:
 # ------------------------------------------------------------------ barra lateral
 with st.sidebar:
     st.header("Variables de decisión")
-    t_in = st.slider("Temperatura entrada reactor T_in (K)", 550.0, 650.0, 600.0, 1.0)
+    t_in = st.slider("Temperatura entrada reactor $T_{in}$ $(K)$", 550.0, 650.0, 600.0, 1.0)
     eps = st.slider("Efectividad del intercambiador ε", 0.60, 0.90, 0.75, 0.01)
 
     st.header("Parámetros del modelo")
