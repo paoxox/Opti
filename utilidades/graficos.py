@@ -103,6 +103,6 @@ def fig_rodilla_precio(tabla):
     fig = go.Figure(go.Scatter(x=tabla["peso_energia"], y=tabla["T_in"], mode="lines+markers",
                                line=dict(color=NARANJA)))
     fig.update_layout(xaxis_title="Peso relativo de la energía (w)",
-                      yaxis_title="T_in del punto elegido (K)",
+                      yaxis_title="T<sub>in del punto elegido (K)",
                       title="Punto elegido según el peso de la energía", margin=dict(t=50, b=40))
     return fig
