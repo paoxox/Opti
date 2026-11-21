@@ -62,7 +62,7 @@ def fig_pareto(df, frontera, idx_rodilla=None, solo_factibles=False):
                                              line=dict(color="black", width=1))))
     fig.update_layout(
         title=dict(text="Optimización multiobjetivo", font=dict(size=14)),
-        xaxis_title="Carga térmica Q<sub>horno< (kW)", yaxis_title="Conversión X<sub>s< (%)",
+        xaxis_title="Carga térmica Q<sub>horno (kW)", yaxis_title="Conversión X<sub>s (%)",
         legend=LEYENDA_ABAJO, margin=dict(t=60, b=90, r=20), height=520)
     return fig
 
