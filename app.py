@@ -73,7 +73,7 @@ malla = calcular_malla(p.m, p.s_in, p.cp, p.ea, p.k0, p.tau, n_t, n_e)
 frontera, idx_rodilla, dist = calcular_frontera(malla)
 
 tab_par, tab_san, tab_sens, tab_mod = st.tabs(
-    ["Frontera de Pareto", "Sanity checks y malla", "Sensibilidad", "Modelo"])
+    ["Frontera de Pareto", "Sanity Checks y Malla", "Sensibilidad", "Modelo"])
 
 # ---- Pareto
 with tab_par:
