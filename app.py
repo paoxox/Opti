@@ -26,27 +26,27 @@ with col_logo:
         st.image("datos/logo.png", width=90)
 with col_titulo:
     st.title("Simulación y Optimización de Hidrodesulfuración (HDS)")
-    st.caption("Evaluación de la conversión de azufre ($X_{s}$) y la carga térmica del horno "
-               "($Q_{horno}$) bajo la restricción $S_{out}$ ≤ 10 ppm.")
+    st.caption("Evaluación de la conversión de azufre (X_S) y la carga térmica del horno "
+               "(Q_horno) bajo la restricción S_out ≤ 10 ppm.")
 
 # ------------------------------------------------------------------ barra lateral
 with st.sidebar:
     st.header("Variables de decisión")
-    t_in = st.slider("Temperatura entrada reactor $T_{in}$ $(K)$", 550.0, 650.0, 600.0, 1.0)
+    t_in = st.slider("Temperatura entrada reactor T_in (K)", 550.0, 650.0, 600.0, 1.0)
     eps = st.slider("Efectividad del intercambiador ε", 0.60, 0.90, 0.75, 0.01)
 
     st.header("Parámetros del modelo")
-    m_dot = st.number_input("Flujo másico $ṁ$ $(kg/h)$", 90_000.0, 110_000.0, 100_000.0, 1000.0)
-    s_in = st.number_input("Azufre de alimentación $S_{in}$ $(ppm)$", 450.0, 550.0, 500.0, 5.0)
-    cp = st.number_input("Capacidad calorífica $Cp$ $(kJ/kg·K)$", 2.25, 2.75, 2.50, 0.05)
-    ea = st.number_input("Energía de activación $Ea$ $(J/mol)$", 72_000.0, 88_000.0, 80_000.0, 500.0)
-    tau = st.number_input("Tiempo espacial τ $(h)$", 0.45, 0.55, 0.50, 0.01)
-    f_k0 = st.slider("Factor sobre $k_{o}$ calibrado", 0.90, 1.10, 1.00, 0.01,
-                     help="$k_{o}$ se calibra una sola vez ($X_{S}$ $(600 K)$ = 0.985 con $Ea$ y τ base). "
+    m_dot = st.number_input("Flujo másico ṁ (kg/h)", 90_000.0, 110_000.0, 100_000.0, 1000.0)
+    s_in = st.number_input("Azufre de alimentación S_in (ppm)", 450.0, 550.0, 500.0, 5.0)
+    cp = st.number_input("Capacidad calorífica Cp (kJ/kg·K)", 2.25, 2.75, 2.50, 0.05)
+    ea = st.number_input("Energía de activación Ea (J/mol)", 72_000.0, 88_000.0, 80_000.0, 500.0)
+    tau = st.number_input("Tiempo espacial τ (h)", 0.45, 0.55, 0.50, 0.01)
+    f_k0 = st.slider("Factor sobre k₀ calibrado", 0.90, 1.10, 1.00, 0.01,
+                     help="k₀ se calibra una sola vez (X_S(600 K) = 0.985 con Ea y τ base). "
                           "Aquí solo se ajusta ±10 %.")
 
     with st.expander("Resolución de la malla"):
-        n_t = st.select_slider("Puntos en $T_{in}$", [51, 101, 201, 401], value=201)
+        n_t = st.select_slider("Puntos en T_in", [51, 101, 201, 401], value=201)
         n_e = st.select_slider("Puntos en ε", [16, 31, 61, 121], value=61)
 
 p = modelo.Parametros(m=m_dot, s_in=s_in, cp=cp, ea=ea, k0=modelo.K0_BASE * f_k0, tau=tau)
@@ -73,7 +73,7 @@ malla = calcular_malla(p.m, p.s_in, p.cp, p.ea, p.k0, p.tau, n_t, n_e)
 frontera, idx_rodilla, dist = calcular_frontera(malla)
 
 tab_par, tab_san, tab_sens, tab_mod = st.tabs(
-    ["Frontera de Pareto", "Sanity Checks y Malla", "Sensibilidad", "Modelo"])
+    ["Frontera de Pareto", "Sanity checks y malla", "Sensibilidad", "Modelo"])
 
 # ---- Pareto
 with tab_par:
@@ -90,7 +90,7 @@ with tab_par:
 
         with col_knee:
             st.markdown("### Knee point (rodilla)")
-            st.info("Solución de compromiso entre Conversión y Energía.")
+            st.info("Solución de compromiso entre conversión y energía.")
             st.metric("Temperatura T_in", f"{rod['T_in']:.1f} K", f"{rod['T_in'] - 273.15:.1f} °C",
                       delta_color="off")
             st.metric("Efectividad ε", f"{rod['eps']:.2f}")
@@ -98,24 +98,24 @@ with tab_par:
             st.metric("S_out", f"{rod['S_out']:.2f} ppm")
             st.metric("Q_horno", f"{rod['Q_kW']:,.1f} kW")
 
-        st.subheader("Puntos representativos de la Frontera")
+        st.subheader("Puntos representativos de la frontera")
         pos = sorted(set(np.linspace(0, len(frontera) - 1, 6).astype(int)) | {idx_rodilla})
-        repres = frontera.iloc[pos][["T_in", "ε", "X_S", "S_out", "Q_kJh", "Q_kW"]].copy()
+        repres = frontera.iloc[pos][["T_in", "eps", "X_S", "S_out", "Q_kJh", "Q_kW"]].copy()
         repres.insert(0, "Nota", ["Knee point" if i == idx_rodilla else "" for i in pos])
         st.dataframe(repres, hide_index=True, width="stretch", column_config={
             "T_in": st.column_config.NumberColumn("T_in (K)", format="%.1f"),
-            "eps": st.column_config.NumberColumn("eps", format="%.3f"),
+            "eps": st.column_config.NumberColumn("ε", format="%.3f"),
             "X_S": st.column_config.NumberColumn("X_S", format="%.5f"),
             "S_out": st.column_config.NumberColumn("S_out (ppm)", format="%.3f"),
-            "Q_kJh": st.column_config.NumberColumn("Q_kJh", format="%.3e"),
-            "Q_kW": st.column_config.NumberColumn("Q_kW", format="%.0f"),
+            "Q_kJh": st.column_config.NumberColumn("Q (kJ/h)", format="%.3e"),
+            "Q_kW": st.column_config.NumberColumn("Q (kW)", format="%.0f"),
         })
 
-        with st.expander("Resolución de la Malla y limitaciones"):
+        with st.expander("Resolución de la malla y limitaciones"):
             st.write(
-                f"La malla usa pasos de {100 / (n_t - 1):.2f} K en $T_{{in}}4 y {0.30 / (n_e - 1):.4f} "
-                "en ε. La frontera es un conjunto discreto: el Knee Point tiene una "
-                "incertidumbre del orden de un paso de malla en $T_{in}$. Como el modelo es "
+                f"La malla usa pasos de {100 / (n_t - 1):.2f} K en T_in y {0.30 / (n_e - 1):.4f} "
+                "en ε. La frontera es un conjunto discreto: el knee point tiene una "
+                "incertidumbre del orden de un paso de malla en T_in. Como el modelo es "
                 "algebraico, evaluar miles de puntos toma milisegundos, así que afinar la malla "
                 "es barato; aun así, un grid search no garantiza el óptimo exacto.")
             st.write(
