@@ -4,7 +4,7 @@ import pandas as pd
 
 
 def frontera_pareto(factibles: pd.DataFrame) -> pd.DataFrame:
-    """Elimina puntos dominados. Ambos objetivos se minimizan: (1 - $X_{s}$) y $Q_{horno}$.
+    """Elimina puntos dominados. Ambos objetivos se minimizan: (1 - X_S) y Q_horno.
 
     Se ordena por f1 (y por Q para desempatar) y se recorre una sola vez
     guardando solo los puntos que mejoran el mejor Q visto hasta el momento.
@@ -54,7 +54,7 @@ def rodilla_vs_peso_energia(frontera: pd.DataFrame, pesos=None) -> pd.DataFrame:
     """Estudio opcional: qué punto de la frontera se elige si la energía pesa más.
 
     No es un modelo económico. Se minimiza una suma ponderada de los objetivos
-    normalizados, J = w * $Q_{norm}$ + (1 - w) * (1 - $X_{s}$)_norm, donde w crece
+    normalizados, J = w * Q_norm + (1 - w) * (1 - X_s)_norm, donde w crece
     cuando la energía es más cara respecto a la calidad.
     """
     if pesos is None:
