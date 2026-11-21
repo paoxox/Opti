@@ -62,9 +62,9 @@ else:
 
 c1, c2, c3, c4 = st.columns(4)
 c1.metric("Conversión $X_{S}$", f"{float(actual['X_S']) * 100:.2f} %")
-c2.metric("Azufre de salida S_out", f"{float(actual['S_out']):.2f} ppm")
-c3.metric("Q_horno", f"{float(actual['Q_kW']):,.1f} kW")
-c4.metric("Q_horno", f"{float(actual['Q_kJh']):,.0f} kJ/h")
+c2.metric("Azufre de salida $S_{out}$", f"{float(actual['S_out']):.2f} ppm")
+c3.metric("$Q_{horno}$", f"{float(actual['Q_kW']):,.1f} kW")
+c4.metric("$Q_{horno}$", f"{float(actual['Q_kJh']):,.0f} kJ/h")
 
 st.divider()
 
