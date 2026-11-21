@@ -194,7 +194,7 @@ with tab_sens:
         t_ref, e_ref = float(frontera.iloc[idx_rodilla]["T_in"]), float(frontera.iloc[idx_rodilla]["eps"])
     else:
         t_ref, e_ref = t_in, eps
-    st.caption(f"Referencia: $T_{{in}} = {t_ref:.1f} K, ε = {e_ref:.2f}. Cada parámetro se perturba "
+    st.caption(f"Referencia: 𝑇in = {t_ref:.1f} K, ε = {e_ref:.2f}. Cada parámetro se perturba "
                "por separado; k₀ no se recalcula cuando cambian Ea o τ.")
 
     sens = modelo.sensibilidad(t_ref, e_ref, p)
@@ -207,8 +207,8 @@ with tab_sens:
         "cambio_%": st.column_config.NumberColumn("Cambio (%)", format="%+.0f"),
         "Q_kJh": st.column_config.NumberColumn("Q (kJ/h)", format="%.4e"),
         "dQ_%": st.column_config.NumberColumn("ΔQ (%)", format="%+.3f"),
-        "S_out_ppm": st.column_config.NumberColumn("S_out (ppm)", format="%.3f"),
-        "dS_out_%": st.column_config.NumberColumn("ΔS_out (%)", format="%+.1f"),
+        "S_out_ppm": st.column_config.NumberColumn("𝑆out (ppm)", format="%.3f"),
+        "dS_out_%": st.column_config.NumberColumn("Δ𝑆out (%)", format="%+.1f"),
         "factible": "¿Factible?",
     })
     st.download_button("Descargar sensibilidad (CSV)", sens.to_csv(index=False).encode("utf-8"),
@@ -223,4 +223,4 @@ with tab_mod:
     st.markdown(
         "- La calibración de k₀ y el incremento adiabático de 15 K son elecciones pedagógicas.\n"
         "- Intercambiador por efectividad constante, Cp constante, sin pérdidas.\n"
-        "- Q_horno negativo se conserva: indica excedente de calor.")
+        "- 𝑄 horno negativo se conserva: indica excedente de calor.")
