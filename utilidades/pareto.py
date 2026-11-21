@@ -4,7 +4,7 @@ import pandas as pd
 
 
 def frontera_pareto(factibles: pd.DataFrame) -> pd.DataFrame:
-    """Elimina puntos dominados. Ambos objetivos se minimizan: (1 - X_S) y Q_horno.
+    """Elimina puntos dominados. Ambos objetivos se minimizan: (1 - $X_{s}$) y $Q_{horno}$.
 
     Se ordena por f1 (y por Q para desempatar) y se recorre una sola vez
     guardando solo los puntos que mejoran el mejor Q visto hasta el momento.
