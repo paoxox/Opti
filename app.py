@@ -178,8 +178,8 @@ with tab_san:
     m2.metric("Puntos factibles", f"{n_fact:,}")
     m3.metric("Fracción factible", f"{n_fact / len(malla):.1%}")
     m4.metric("Puntos en Pareto", f"{len(frontera):,}")
-    st.caption(f"Rango de S_out: {malla['S_out'].min():.3g} a {malla['S_out'].max():.1f} ppm. "
-               f"Rango de Q_horno: {malla['Q_kJh'].min():.3e} a {malla['Q_kJh'].max():.3e} kJ/h "
+    st.caption(f"Rango de 𝑆out: {malla['S_out'].min():.3g} a {malla['S_out'].max():.1f} ppm. "
+               f"Rango de 𝑄 horno: {malla['Q_kJh'].min():.3e} a {malla['Q_kJh'].max():.3e} kJ/h "
                f"({malla['Q_kW'].min():,.0f} a {malla['Q_kW'].max():,.0f} kW).")
     st.plotly_chart(graficos.fig_factibilidad(malla, t_in, eps), width="stretch")
 
