@@ -54,7 +54,7 @@ def fig_pareto(df, frontera, idx_rodilla=None, solo_factibles=False):
     if idx_rodilla is not None and len(frontera):
         k = frontera.iloc[idx_rodilla]
         fig.add_trace(go.Scatter(x=[k["Q_kW"]], y=[k["X_S"] * 100], mode="markers", name="Knee point",
-                                 marker=dict(size=16, symbol="point", color="red",
+                                 marker=dict(size=16, symbol="circle", color="red",
                                              line=dict(color="black", width=1))))
     fig.update_layout(
         title=dict(text="Optimización Multiobjetivo", font=dict(size=14)),
