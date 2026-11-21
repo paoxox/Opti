@@ -1,5 +1,4 @@
 import os
-
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -13,7 +12,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
-
 # Cabecera
 col_logo, col_titulo = st.columns([1, 8], vertical_alignment="center")
 with col_logo:
@@ -137,7 +135,6 @@ with tab_par:
         st.download_button("Descargar frontera (CSV)",
                            frontera.drop(columns="f1").to_csv(index=False).encode("utf-8"),
                            file_name="frontera_pareto.csv", mime="text/csv")
-
 # Sanity checks y malla
 with tab_san:
     st.subheader("Sanity checks (parámetros base)")
@@ -184,7 +181,7 @@ with tab_san:
                f"Rango de 𝑄 horno: {malla['Q_kJh'].min():.3e} a {malla['Q_kJh'].max():.3e} kJ/h "
                f"({malla['Q_kW'].min():,.0f} a {malla['Q_kW'].max():,.0f} kW).")
     st.plotly_chart(graficos.fig_factibilidad(malla, t_in, eps), width="stretch")
-
+    
 # Sensibilidad
 with tab_sens:
     st.subheader("Análisis de Sensibilidad Paramétrica")
@@ -215,7 +212,7 @@ with tab_sens:
     })
     st.download_button("Descargar sensibilidad (CSV)", sens.to_csv(index=False).encode("utf-8"),
                        file_name="sensibilidad.csv", mime="text/csv")
-
+    
 # Modelo
 with tab_mod:
     st.latex(r"k(T)=k_0\,e^{-E_a/(RT)},\quad X_S=1-e^{-k\tau},\quad S_{out}=S_{in}(1-X_S)")
