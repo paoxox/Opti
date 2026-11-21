@@ -1,63 +1,128 @@
+"""Modelo simplificado de la unidad HDS (reactor, balance térmico y horno).
+
+Todo está escrito con numpy para poder evaluar mallas completas de una vez.
+"""
+from dataclasses import dataclass, replace
+
 import numpy as np
 import pandas as pd
 
-# Constantes fijas del modelo
-R_GAS = 8.314  # J/(mol*K)
-T_ALIM = 300.0  # K
-X_CALIB = 0.985
-T_CALIB = 600.0  # K
-TAU_CALIB = 0.5  # h
-EA_CALIB = 80000.0  # J/mol
-DT_AD_MAX = 15.0  # K
+R = 8.314             # J/(mol K)
+T_ALIM = 300.0        # K, temperatura de la alimentación fresca
+DT_AD_MAX = 15.0      # K, elevación adiabática a conversión completa
+S_MAX = 10.0          # ppm, especificación del producto
+T_CALIB = 600.0       # K, punto de calibración de k0
+X_CALIB = 0.985       # conversión en el punto de calibración
+EA_BASE = 80_000.0    # J/mol
+TAU_BASE = 0.5        # h
 
-def calcular_k0(ea: float = EA_CALIB, tau: float = TAU_CALIB, x_ref: float = X_CALIB, t_ref: float = T_CALIB) -> float:
-    """Calcula el factor preexponencial calibrado k0 [h^-1]."""
-    return -np.log(1.0 - x_ref) / (tau * np.exp(-ea / (R_GAS * t_ref)))
+# k0 se calibra una sola vez con los valores base de Ea y tau. Si luego el usuario
+# cambia Ea o tau, k0 NO se recalcula: se perturba por separado (+-10 %), tal como
+# pide el enunciado.
+K0_BASE = float(-np.log(1 - X_CALIB) / (TAU_BASE * np.exp(-EA_BASE / (R * T_CALIB))))
 
-def evaluar_hds(t_in, epsilon, m_dot, s_in, cp, ea, k0, tau):
-    """Evalúa cinética, calidad de nafta, balance térmico y carga del horno."""
-    k_t = k0 * np.exp(-ea / (R_GAS * t_in))
-    x_s = 1.0 - np.exp(-k_t * tau)
-    s_out = s_in * (1.0 - x_s)
-    factible = s_out <= 10.0
 
-    delta_t_ad = DT_AD_MAX * x_s
-    t_efluente = t_in + delta_t_ad
-    t_intercambiador = T_ALIM + epsilon * (t_efluente - T_ALIM)
+@dataclass(frozen=True)
+class Parametros:
+    m: float = 100_000.0     # kg/h
+    s_in: float = 500.0      # ppm peso
+    cp: float = 2.5          # kJ/(kg K)
+    ea: float = EA_BASE      # J/mol
+    k0: float = K0_BASE      # 1/h
+    tau: float = TAU_BASE    # h
 
-    q_horno_kjh = m_dot * cp * (t_in - t_intercambiador)
-    q_horno_kw = q_horno_kjh / 3600.0
 
+def constante_cinetica(t_in, p: Parametros):
+    return p.k0 * np.exp(-p.ea / (R * np.asarray(t_in, dtype=float)))
+
+
+def conversion(t_in, p: Parametros):
+    return 1.0 - np.exp(-constante_cinetica(t_in, p) * p.tau)
+
+
+def azufre_salida(t_in, p: Parametros):
+    return p.s_in * (1.0 - conversion(t_in, p))
+
+
+def temp_efluente(t_in, p: Parametros):
+    return np.asarray(t_in, dtype=float) + DT_AD_MAX * conversion(t_in, p)
+
+
+def temp_intercambiador(t_in, eps, p: Parametros):
+    t_ef = temp_efluente(t_in, p)
+    return T_ALIM + np.asarray(eps, dtype=float) * (t_ef - T_ALIM)
+
+
+def q_horno(t_in, eps, p: Parametros):
+    """Carga del horno en kJ/h. Puede ser negativa (excedente de calor)."""
+    return p.m * p.cp * (np.asarray(t_in, dtype=float) - temp_intercambiador(t_in, eps, p))
+
+
+def kjh_a_kw(q):
+    return np.asarray(q) / 3600.0
+
+
+def evaluar(t_in, eps, p: Parametros) -> dict:
+    """Evalúa un punto (o arreglos del mismo tamaño) y devuelve un diccionario."""
+    x = conversion(t_in, p)
+    s = p.s_in * (1.0 - x)
+    q = q_horno(t_in, eps, p)
     return {
-        "Tin_K": t_in, "epsilon": epsilon, "k_h-1": k_t, "Xs": x_s,
-        "Sout_ppm": s_out, "factible": factible, "dT_ad_K": delta_t_ad,
-        "T_efluente_K": t_efluente, "T_intercambiador_K": t_intercambiador,
-        "Q_horno_kJ_h": q_horno_kjh, "Q_horno_kW": q_horno_kw,
+        "T_in": t_in,
+        "eps": eps,
+        "X_S": x,
+        "S_out": s,
+        "factible": s <= S_MAX,
+        "T_efluente": temp_efluente(t_in, p),
+        "T_intercambiador": temp_intercambiador(t_in, eps, p),
+        "Q_kJh": q,
+        "Q_kW": kjh_a_kw(q),
     }
 
-def calcular_sensibilidad(t_in_base, eps_base, m_dot_base, s_in_base, cp_base, ea_base, k0_base, tau_base):
-    """Genera la tabla de sensibilidad ±10% corrigiendo la coherencia de k0, Ea y tau."""
-    caso_base = evaluar_hds(t_in_base, eps_base, m_dot_base, s_in_base, cp_base, ea_base, k0_base, tau_base)
-    parametros = [("Flujo másico (ṁ)", "m_dot", m_dot_base), ("Capacidad calorífica (Cp)", "cp", cp_base), 
-                  ("Energía de activación (Ea)", "ea", ea_base), ("Factor preexponencial (k0)", "k0", k0_base),
-                  ("Tiempo espacial (tau)", "tau", tau_base), ("Efectividad (ε)", "epsilon", eps_base)]
-    
-    filas = []
-    for nombre, clave, val_base in parametros:
-        for factor, etiqueta in [(0.90, "-10%"), (1.10, "+10%")]:
-            kwargs = {"t_in": t_in_base, "epsilon": eps_base, "m_dot": m_dot_base, "s_in": s_in_base, "cp": cp_base, "ea": ea_base, "k0": k0_base, "tau": tau_base}
-            val_pert = val_base * factor
-            if clave == "epsilon": val_pert = min(max(val_pert, 0.0), 1.0)
-            kwargs[clave] = val_pert
-            
-            # Si se perturba Ea o tau, recalcular k0 para mantener la coherencia física de la calibración
-            if clave in ["ea", "tau"]: kwargs["k0"] = calcular_k0(kwargs["ea"], kwargs["tau"])
-            
-            res = evaluar_hds(**kwargs)
-            delta_q_pct = ((res["Q_horno_kW"] - caso_base["Q_horno_kW"]) / abs(caso_base["Q_horno_kW"]) * 100.0) if abs(caso_base["Q_horno_kW"]) > 1e-9 else 0.0
-            delta_s_pct = ((res["Sout_ppm"] - caso_base["Sout_ppm"]) / caso_base["Sout_ppm"] * 100.0) if caso_base["Sout_ppm"] > 0 else 0.0
 
-            filas.append({"Parámetro": nombre, "Perturbación": etiqueta, "Valor": f"{val_pert:.4g}", 
-                          "Q_horno (kW)": round(res["Q_horno_kW"], 2), "ΔQ (%)": round(delta_q_pct, 2),
-                          "Sout (ppm)": round(res["Sout_ppm"], 3), "ΔSout (%)": round(delta_s_pct, 2), "Factible": "Sí" if res["factible"] else "No"})
+def malla(p: Parametros, n_t: int = 201, n_e: int = 61) -> pd.DataFrame:
+    """Grid search completo sobre el dominio T_in x eps."""
+    t = np.linspace(550.0, 650.0, n_t)
+    e = np.linspace(0.60, 0.90, n_e)
+    tt, ee = np.meshgrid(t, e)
+    return pd.DataFrame(evaluar(tt.ravel(), ee.ravel(), p))
+
+
+def sensibilidad(t_in: float, eps: float, p: Parametros, frac: float = 0.10) -> pd.DataFrame:
+    """Perturba cada parámetro +-frac y reporta el efecto en Q_horno y S_out."""
+    base = evaluar(t_in, eps, p)
+    filas = []
+    for nombre in ("m", "cp", "ea", "k0", "tau"):
+        for signo in (-1, 1):
+            q_nuevo = replace(p, **{nombre: getattr(p, nombre) * (1 + signo * frac)})
+            r = evaluar(t_in, eps, q_nuevo)
+            filas.append({
+                "parametro": nombre,
+                "cambio_%": signo * frac * 100,
+                "Q_kJh": float(r["Q_kJh"]),
+                "dQ_%": float((r["Q_kJh"] / base["Q_kJh"] - 1) * 100),
+                "S_out_ppm": float(r["S_out"]),
+                "dS_out_%": float((r["S_out"] / base["S_out"] - 1) * 100),
+                "factible": bool(r["factible"]),
+            })
     return pd.DataFrame(filas)
+
+
+def barrido_s_in(t_in: float, eps: float, p: Parametros, n: int = 11) -> pd.DataFrame:
+    """S_in se explora dentro del rango de la tabla (450-550 ppm)."""
+    filas = []
+    for s in np.linspace(450.0, 550.0, n):
+        r = evaluar(t_in, eps, replace(p, s_in=float(s)))
+        filas.append({"S_in_ppm": float(s), "S_out_ppm": float(r["S_out"]),
+                      "factible": bool(r["factible"]), "Q_kJh": float(r["Q_kJh"])})
+    return pd.DataFrame(filas)
+
+
+def validaciones(p: Parametros) -> dict:
+    """Los tres sanity checks del enunciado."""
+    c1 = evaluar(650.0, 0.90, p)
+    c2 = evaluar(550.0, 0.75, p)
+    # Tercer check: eps -> 1 (1.0 se usa solo como límite teórico)
+    c3 = evaluar(650.0, 1.0, p)
+    q_limite = p.m * p.cp * (650.0 - float(c3["T_efluente"]))
+    return {"check1": c1, "check2": c2, "check3": c
