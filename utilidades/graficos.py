@@ -38,7 +38,7 @@ def fig_pareto(df, frontera, idx_rodilla=None, solo_factibles=False):
     if not solo_factibles:
         nofact = df[~df["factible"]]
         fig.add_trace(go.Scattergl(x=nofact["Q_kW"], y=nofact["X_S"] * 100, mode="markers",
-                                   name="Infactibles (S_out > 10 ppm)",
+                                   name="Infactibles (S<sub>out > 10 ppm)",
                                    marker=dict(size=4, color=GRIS, opacity=0.35)))
     fact = df[df["factible"]]
     fig.add_trace(go.Scattergl(
