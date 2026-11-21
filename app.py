@@ -164,7 +164,7 @@ with tab_san:
     }), hide_index=True, width="stretch", column_config={
         "𝑇 intercambiador (K)": st.column_config.NumberColumn(format="%.4f"),
         "𝑇 efluente (K)": st.column_config.NumberColumn(format="%.4f"),
-        "𝑄horno (kJ/h)": st.column_config.NumberColumn(format="%.4e"),
+        "𝑄 horno (kJ/h)": st.column_config.NumberColumn(format="%.4e"),
     })
     st.caption(f"Cuando ε → 1, 𝑇 intercambiador → 𝑇 efluente y Q → ṁ·Cp·(𝑇in − 𝑇 efluente) = "
                f"{v['q_limite_kJh']:.4e} kJ/h. El signo negativo indica que el efluente está "
@@ -185,7 +185,7 @@ with tab_san:
 
 # ---- Sensibilidad
 with tab_sens:
-    st.subheader("Análisis de sensibilidad paramétrica")
+    st.subheader("Análisis de Sensibilidad Paramétrica")
     opciones = ["Punto de la barra lateral"]
     if not frontera.empty:
         opciones.insert(0, "Knee point")
