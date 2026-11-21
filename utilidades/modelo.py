@@ -70,7 +70,7 @@ def evaluar(t_in, eps, p: Parametros) -> dict:
     return {
         "T_in": t_in,
         "eps": eps,
-        "X_s": x,
+        "X_S": x,
         "S_out": s,
         "factible": s <= S_MAX,
         "T_efluente": temp_efluente(t_in, p),
