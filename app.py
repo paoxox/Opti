@@ -26,8 +26,8 @@ with col_logo:
         st.image("datos/logo.png", width=90)
 with col_titulo:
     st.title("Simulación y Optimización de Hidrodesulfuración (HDS)")
-    st.caption("Evaluación de la conversión de azufre (X_S) y la carga térmica del horno "
-               "(Q_horno) bajo la restricción S_out ≤ 10 ppm.")
+    st.caption("Evaluación de la conversión de azufre $X_{S}$) y la carga térmica del horno "
+               "($Q_{horno}$) bajo la restricción $S_{out}$ ≤ 10 ppm.")
 
 # ------------------------------------------------------------------ barra lateral
 with st.sidebar:
