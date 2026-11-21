@@ -91,7 +91,7 @@ with tab_par:
         with col_knee:
             st.markdown("### Knee Point")
             st.info("Solución de compromiso entre Conversión y Energía.")
-            st.metric("Temperatura T_in", f"{rod['T_in']:.1f} K", f"{rod['T_in'] - 273.15:.1f} °C",
+            st.metric("Temperatura $T_{in}$", f"{rod['T_in']:.1f} K", f"{rod['T_in'] - 273.15:.1f} °C",
                       delta_color="off")
             st.metric("Efectividad ε", f"{rod['eps']:.2f}")
             st.metric("Conversión X_S", f"{rod['X_S'] * 100:.3f} %")
