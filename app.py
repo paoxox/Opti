@@ -42,7 +42,7 @@ with st.sidebar:
     ea = st.number_input("Energía de activación $Ea$ $(J/mol)$", 72_000.0, 88_000.0, 80_000.0, 500.0)
     tau = st.number_input("Tiempo espacial τ $(h)$", 0.45, 0.55, 0.50, 0.01)
     f_k0 = st.slider("Factor sobre $k_{o}$ calibrado", 0.90, 1.10, 1.00, 0.01,
-                     help="$k_{o}$ $se$ $calibra$ $una$ $sola$ $vez$ ($X_{S}$ $(600 K)$ = $0.9854 $con4 $Ea$ $y$ $τ$ $base$). "
+                     help="$k_{o}$ $se$ $calibra$ $una$ $sola$ $vez$ ($X_{S}$ $(600 K)$ = $0.9854 $con$ $Ea$ $y$ $τ$ $base$). "
                           "$Aquí$ $solo$ $se$ $ajusta$ $±10$ %.")
 
     with st.expander("Resolución de la malla"):
