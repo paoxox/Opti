@@ -39,7 +39,7 @@ def fig_pareto(df, frontera, idx_rodilla=None, solo_factibles=False):
     fact = df[df["factible"]]
     fig.add_trace(go.Scattergl(
         x=fact["Q_kW"], y=fact["X_S"] * 100, mode="markers", name="Factibles",
-        marker=dict(size=4, color="lightskyblue", opacity=0.5),
+        marker=dict(size=4, color="lightskyblue", opacity=0.2),
         customdata=fact[["T_in", "eps"]],
         hovertemplate="Q=%{x:.0f} kW<br>X_S=%{y:.4f} %<br>T_in=%{customdata[0]:.1f} K"
                       "<br>ε=%{customdata[1]:.3f}<extra></extra>"))
