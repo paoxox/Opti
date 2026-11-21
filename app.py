@@ -126,7 +126,14 @@ with tab_par:
                      "económico completo.")
             tabla_w = pareto.rodilla_vs_peso_energia(frontera)
             st.plotly_chart(graficos.fig_rodilla_precio(tabla_w), width="stretch")
-            st.dataframe(tabla_w, hide_index=True, width="stretch")
+            st.dataframe(tabla_w, hide_index=True, width="stretch", column_config={
+                "peso_energia": st.column_config.NumberColumn("Peso de la energía (w)", format="%.2f"),
+                "T_in": st.column_config.NumberColumn("𝑇ᵢₙ (K)", format="%.1f"),
+                "eps": st.column_config.NumberColumn("ε", format="%.3f"),
+                "X_S": st.column_config.NumberColumn("𝑋ₛ", format="%.5f"),
+                "S_out": st.column_config.NumberColumn("𝑆ₒᵤₜ (ppm)", format="%.3f"),
+                "Q_kW": st.column_config.NumberColumn("𝑄 (kW)", format="%.0f"),
+            })
     
         st.download_button("Descargar frontera (CSV)",
                            frontera.drop(columns="f1").to_csv(index=False).encode("utf-8"),
