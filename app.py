@@ -58,7 +58,7 @@ st.subheader("Punto Operativo Seleccionado")
 if actual["factible"]:
     st.success(f"Cumple la especificación: $S_{{out}}$ = {float(actual['S_out']):.2f} ppm (≤ 10 ppm).")
 else:
-    st.warning(f"No cumple la especificación: S_out = {float(actual['S_out']):.2f} ppm (> 10 ppm).")
+    st.warning(f"No cumple la especificación: $S_{{out}}$ = {float(actual['S_out']):.2f} ppm (> 10 ppm).")
 
 c1, c2, c3, c4 = st.columns(4)
 c1.metric("Conversión X_S", f"{float(actual['X_S']) * 100:.2f} %")
