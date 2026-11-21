@@ -1,63 +1,73 @@
+"""Frontera de Pareto, punto de rodilla y sensibilidad al precio de la energía."""
 import numpy as np
 import pandas as pd
-from .modelo import evaluar_hds, EA_CALIB, TAU_CALIB
 
-def calcular_malla_y_pareto(n_puntos=50, m_dot=100000.0, s_in=500.0, cp=2.5, ea=EA_CALIB, k0=None, tau=TAU_CALIB):
-    """Genera la malla de 2500 puntos y calcula la Frontera de Pareto y el Knee Point."""
-    grid_tin = np.linspace(550.0, 650.0, n_puntos)
-    grid_eps = np.linspace(0.60, 0.90, n_puntos)
-    T_grid, E_grid = np.meshgrid(grid_tin, grid_eps)
-    T_flat, E_flat = T_grid.flatten(), E_grid.flatten()
 
-    # Vectorización: evalúa todos los puntos a la vez
-    res = evaluar_hds(t_in=T_flat, epsilon=E_flat, m_dot=m_dot, s_in=s_in, cp=cp, ea=ea, k0=k0, tau=tau)
-    
-    df_grid = pd.DataFrame(res)
-    df_factible = df_grid[df_grid["factible"]].copy()
+def frontera_pareto(factibles: pd.DataFrame) -> pd.DataFrame:
+    """Elimina puntos dominados. Ambos objetivos se minimizan: (1 - X_S) y Q_horno.
 
-    if df_factible.empty:
-        return df_grid, pd.DataFrame(), None
+    Se ordena por f1 (y por Q para desempatar) y se recorre una sola vez
+    guardando solo los puntos que mejoran el mejor Q visto hasta el momento.
+    """
+    if factibles.empty:
+        return factibles.copy()
+    d = factibles.assign(f1=1.0 - factibles["X_S"])
+    d = d.sort_values(["f1", "Q_kJh"], kind="mergesort").reset_index(drop=True)
+    mejor_q = np.inf
+    mantener = []
+    for q in d["Q_kJh"].to_numpy():
+        if q < mejor_q:
+            mantener.append(True)
+            mejor_q = q
+        else:
+            mantener.append(False)
+    return d[mantener].reset_index(drop=True)
 
-    # Filtrado de Pareto expresando Xs como minimización (1 - Xs)
-    df_factible["obj_xs"] = 1.0 - df_factible["Xs"]
-    df_factible["obj_q"] = df_factible["Q_horno_kW"]
-    df_sorted = df_factible.sort_values(by=["obj_xs", "obj_q"], ascending=[True, True]).reset_index(drop=True)
 
-    pareto_indices = []
-    min_q_visto = float("inf")
-    for i, row in df_sorted.iterrows():
-        if row["obj_q"] < min_q_visto:
-            pareto_indices.append(i)
-            min_q_visto = row["obj_q"]
+def _normalizar(v: np.ndarray) -> np.ndarray:
+    rango = v.max() - v.min()
+    return np.zeros_like(v) if rango == 0 else (v - v.min()) / rango
 
-    df_pareto = df_sorted.loc[pareto_indices].copy()
 
-    # Cálculo del Knee Point (Normalización min-max)
-    xs_min, xs_max = df_pareto["obj_xs"].min(), df_pareto["obj_xs"].max()
-    q_min, q_max = df_pareto["obj_q"].min(), df_pareto["obj_q"].max()
+def punto_rodilla(frontera: pd.DataFrame):
+    """Devuelve (indice, distancias) del knee point.
 
-    denom_xs = (xs_max - xs_min) if (xs_max - xs_min) > 0 else 1.0
-    denom_q = (q_max - q_min) if (q_max - q_min) > 0 else 1.0
+    Distancia perpendicular a la recta que une los extremos de la frontera
+    normalizada con min-max.
+    """
+    if len(frontera) < 3:
+        return 0, np.zeros(len(frontera))
+    f1 = _normalizar((1.0 - frontera["X_S"]).to_numpy())
+    f2 = _normalizar(frontera["Q_kJh"].to_numpy())
+    p = np.column_stack([f1, f2])
+    a, b = p[0], p[-1]
+    ab = b - a
+    norma = np.hypot(*ab)
+    if norma == 0:
+        return 0, np.zeros(len(p))
+    # producto cruz 2D / |ab| = distancia perpendicular
+    dist = np.abs(ab[0] * (p[:, 1] - a[1]) - ab[1] * (p[:, 0] - a[0])) / norma
+    return int(np.argmax(dist)), dist
 
-    df_pareto["xs_norm"] = (df_pareto["obj_xs"] - xs_min) / denom_xs
-    df_pareto["q_norm"] = (df_pareto["obj_q"] - q_min) / denom_q
 
-    x1, y1 = df_pareto.iloc[0]["xs_norm"], df_pareto.iloc[0]["q_norm"]
-    x2, y2 = df_pareto.iloc[-1]["xs_norm"], df_pareto.iloc[-1]["q_norm"]
+def rodilla_vs_peso_energia(frontera: pd.DataFrame, pesos=None) -> pd.DataFrame:
+    """Estudio opcional: qué punto de la frontera se elige si la energía pesa más.
 
-    # Distancia a la recta
-    a = y2 - y1
-    b = -(x2 - x1)
-    c = x2 * y1 - y2 * x1
-    norma = np.sqrt(a**2 + b**2)
-
-    distancias = []
-    for _, row in df_pareto.iterrows():
-        x0, y0 = row["xs_norm"], row["q_norm"]
-        d = abs(a * x0 + b * y0 + c) / norma if norma != 0 else 0.0
-        distancias.append(d)
-
-    df_pareto["distancia_knee"] = distancias
+    No es un modelo económico. Se minimiza una suma ponderada de los objetivos
+    normalizados, J = w * Q_norm + (1 - w) * (1 - X_S)_norm, donde w crece
+    cuando la energía es más cara respecto a la calidad.
+    """
+    if pesos is None:
+        pesos = np.linspace(0.05, 0.95, 19)
+    f1 = _normalizar((1.0 - frontera["X_S"]).to_numpy())
+    f2 = _normalizar(frontera["Q_kJh"].to_numpy())
+    filas = []
+    for w in pesos:
+        i = int(np.argmin(w * f2 + (1 - w) * f1))
+        fila = frontera.iloc[i]
+        filas.append({"peso_energia": float(w), "T_in": fila["T_in"], "eps": fila["eps"],
+                      "X_S": fila["X_S"], "S_out": fila["S_out"], "Q_kW": fila["Q_kW"]})
+    return pd.DataFrame(filas)
     knee_point = df_pareto.loc[df_pareto["distancia_knee"].idxmax()].to_dict()
 
     return df_grid, df_pareto, knee_point
