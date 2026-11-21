@@ -194,12 +194,12 @@ with tab_sens:
         t_ref, e_ref = float(frontera.iloc[idx_rodilla]["T_in"]), float(frontera.iloc[idx_rodilla]["eps"])
     else:
         t_ref, e_ref = t_in, eps
-    st.caption(f"Referencia: T_in = {t_ref:.1f} K, ε = {e_ref:.2f}. Cada parámetro se perturba "
+    st.caption(f"Referencia: $T_{{in}} = {t_ref:.1f} K, ε = {e_ref:.2f}. Cada parámetro se perturba "
                "por separado; k₀ no se recalcula cuando cambian Ea o τ.")
 
     sens = modelo.sensibilidad(t_ref, e_ref, p)
     g1, g2 = st.columns(2)
-    g1.plotly_chart(graficos.fig_tornado(sens, "dQ_%", "Efecto sobre Q_horno (%)"), width="stretch")
+    g1.plotly_chart(graficos.fig_tornado(sens, "dQ_%", "Efecto sobre 𝑄 horno (%)"), width="stretch")
     g2.plotly_chart(graficos.fig_s_in(modelo.barrido_s_in(t_ref, e_ref, p)), width="stretch")
 
     st.dataframe(sens, hide_index=True, width="stretch", column_config={
