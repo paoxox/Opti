@@ -51,7 +51,7 @@ def fig_pareto(df, frontera, idx_rodilla=None, solo_factibles=False):
         fig.add_trace(go.Scatter(
             x=frontera["Q_kW"], y=frontera["X_S"] * 100, mode="lines+markers",
             name="Frontera de Pareto", line=dict(color="royalblue", width=3), marker=dict(size=5),
-            customdata=frontera[["𝑇in", "ε", "𝑆out"]],
+            customdata=frontera[["T_in", "eps", "S_out"]],
             hovertemplate="<b>Pareto</b><br>Q=%{x:.0f} kW<br>X_S=%{y:.4f} %"
                           "<br>T_in=%{customdata[0]:.1f} K<br>ε=%{customdata[1]:.3f}"
                           "<br>S_out=%{customdata[2]:.2f} ppm<extra></extra>"))
@@ -100,7 +100,7 @@ def fig_s_in(barrido):
 
 
 def fig_rodilla_precio(tabla):
-    fig = go.Figure(go.Scatter(x=tabla["Peso energia"], y=tabla["𝑇in"], mode="lines+markers",
+    fig = go.Figure(go.Scatter(x=tabla["peso_energia"], y=tabla["T_in"], mode="lines+markers",
                                line=dict(color=NARANJA)))
     fig.update_layout(xaxis_title="Peso relativo de la energía (w)",
                       yaxis_title="T<sub>in</sub> del punto elegido (K)",
