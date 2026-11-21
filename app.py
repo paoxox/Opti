@@ -18,8 +18,8 @@ st.set_page_config(
 col_logo, col_titulo = st.columns([1, 8], vertical_alignment="center")
 with col_logo:
     # Si guardas un logo en datos/logo.png se muestra aquí; si no, no pasa nada.
-    if os.path.exists("datos/logo.png"):
-        st.image("datos/logo.png", width=90)
+    if os.path.exists("datos/logo.avif"):
+        st.image("datos/logo.avif", width=90)
 with col_titulo:
     st.title("Simulación y Optimización de Hidrodesulfuración (HDS)")
     st.caption("Evaluación de la conversión de azufre ($X_{S}$) y la carga térmica del horno "
