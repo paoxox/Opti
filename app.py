@@ -100,7 +100,7 @@ with tab_par:
 
         st.subheader("Puntos representativos de la Frontera")
         pos = sorted(set(np.linspace(0, len(frontera) - 1, 6).astype(int)) | {idx_rodilla})
-        repres = frontera.iloc[pos][["T_in", "ε", "X_S", "S_out", "Q (kJ/h)", "Q (kW)"]].copy()
+        repres = frontera.iloc[pos][["T_in", "ε", "X_S", "S_out", "Q_kJh", "Q_kW"]].copy()
         repres.insert(0, "Nota", ["Knee point" if i == idx_rodilla else "" for i in pos])
         st.dataframe(repres, hide_index=True, width="stretch", column_config={
             "T_in": st.column_config.NumberColumn("T_in (K)", format="%.1f"),
